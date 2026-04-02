@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FridgeMind — Cook what you have</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <div class="bg-pattern"></div>
+
+  <main>
+
+    <!-- ── HEADER ── -->
+    <header class="site-header fade-up">
+      <div class="header-badge">
+        <span class="badge-dot"></span>
+        Cook smart · Waste less · Eat better
+      </div>
+      <h1>What's left in<br/>your fridge?</h1>
+      <p class="header-sub">Tell us your leftovers and your mood — we'll suggest the perfect Indian recipe.</p>
+    </header>
+
+
+    <!-- ── STEP 1 · INGREDIENTS ── -->
+    <section class="card fade-up delay-1">
+      <div class="step-header">
+        <span class="step-number">1</span>
+        <div>
+          <h2>Your ingredients</h2>
+          <p class="step-desc">Add everything you have — even half-used veggies count</p>
+        </div>
+      </div>
+
+      <div id="chip-container" class="chip-container"></div>
+
+      <div class="input-row">
+        <input
+          id="ingredient-input"
+          type="text"
+          placeholder="Type an ingredient, press Enter..."
+          autocomplete="off"
+        />
+        <button class="add-btn" id="add-btn">Add</button>
+      </div>
+
+      <div class="quick-add">
+        <span class="quick-label">Quick add:</span>
+        <div class="quick-pills" id="quick-pills"></div>
+      </div>
+    </section>
+
+
+    <!-- ── STEP 2 · MOOD ── -->
+    <section class="card fade-up delay-2">
+      <div class="step-header">
+        <span class="step-number">2</span>
+        <div>
+          <h2>How are you feeling?</h2>
+          <p class="step-desc">Your mood shapes the kind of dish we suggest</p>
+        </div>
+      </div>
+      <div class="mood-grid" id="mood-grid"></div>
+    </section>
+
+
+    <!-- ── STEP 3 · DIET ── -->
+    <section class="card fade-up delay-3">
+      <div class="step-header">
+        <span class="step-number">3</span>
+        <div>
+          <h2>Dietary preference</h2>
+          <p class="step-desc">We'll make sure the recipe fits your lifestyle</p>
+        </div>
+      </div>
+      <div class="diet-row" id="diet-row"></div>
+    </section>
+
+
+    <!-- ── CTA ── -->
+    <div class="cta-section fade-up delay-4">
+      <button class="find-btn" id="find-btn">
+        <span class="btn-icon">&#127859;</span>
+        Find My Recipe
+      </button>
+      <p class="validation-msg hidden" id="validation-msg">
+        Please add at least one ingredient and pick a mood.
+      </p>
+    </div>
+
+
+    <!-- ── LOADING ── -->
+    <div class="loading-section hidden" id="loading-section">
+      <div class="loader-ring"></div>
+      <p class="loader-text" id="loader-text">Finding the perfect recipe...</p>
+    </div>
+
+
+    <!-- ── RECIPE RESULT ── -->
+    <section class="recipe-card hidden" id="recipe-section">
+
+      <div class="recipe-header">
+        <div class="recipe-title-block">
+          <p class="recipe-eyebrow">Your recipe</p>
+          <h2 id="recipe-name"></h2>
+          <p id="recipe-tagline" class="recipe-tagline"></p>
+        </div>
+        <div class="recipe-meta" id="recipe-meta"></div>
+      </div>
+
+      <div class="recipe-divider"></div>
+
+      <div class="recipe-body">
+
+        <div class="recipe-col">
+          <p class="col-label">Ingredients</p>
+          <ul id="recipe-ingredients" class="ingredient-list"></ul>
+        </div>
+
+        <div class="recipe-col">
+          <p class="col-label">How to make it</p>
+          <ol id="recipe-steps" class="steps-list"></ol>
+        </div>
+
+      </div>
+
+      <div class="recipe-tip-box" id="recipe-tip-box"></div>
+
+      <div class="recipe-actions">
+        <button class="action-btn secondary" onclick="tryAgain()">
+          &#8635; Try another
+        </button>
+        <button class="action-btn primary" onclick="saveRecipe()">
+          &#9829; Save recipe
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ── ERROR ── -->
+    <div class="error-box hidden" id="error-box">
+      <p id="error-msg"></p>
+      <button onclick="dismissError()">Dismiss</button>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    Built with &#10084; in India &nbsp;·&nbsp; FridgeMind &nbsp;·&nbsp; Powered by Claude AI
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
