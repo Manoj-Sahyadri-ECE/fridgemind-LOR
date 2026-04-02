@@ -1,6 +1,3 @@
-# Never commit your API key
-js/api.js
-
 # OS files
 .DS_Store
 Thumbs.db
