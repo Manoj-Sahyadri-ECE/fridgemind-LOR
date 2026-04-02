@@ -12,7 +12,7 @@ Diet: ${diet === 'none' ? 'no restriction' : diet}
 
 Generate ONE real named Indian recipe using most of these ingredients.
 
-Reply ONLY with this JSON, no extra text:
+Reply ONLY with this JSON, no extra text, no markdown, no backticks:
 {
   "name": "Dish name e.g. Paneer Bhurji",
   "tagline": "One line description",
@@ -26,13 +26,13 @@ Reply ONLY with this JSON, no extra text:
 
     const https = require('https');
 
-    const body = JSON.stringify({
+    const bodyStr = JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 1200,
       messages: [{ role: 'user', content: prompt }],
     });
 
-    const recipeText = await new Promise((resolve, reject) => {
+    const rawResponse = await new Promise((resolve, reject) => {
       const req = https.request({
         hostname: 'api.anthropic.com',
         path: '/v1/messages',
@@ -41,7 +41,7 @@ Reply ONLY with this JSON, no extra text:
           'Content-Type': 'application/json',
           'x-api-key': process.env.ANTHROPIC_API_KEY,
           'anthropic-version': '2023-06-01',
-          'Content-Length': Buffer.byteLength(body),
+          'Content-Length': Buffer.byteLength(bodyStr),
         },
       }, (res) => {
         let data = '';
@@ -49,12 +49,27 @@ Reply ONLY with this JSON, no extra text:
         res.on('end', () => resolve(data));
       });
       req.on('error', reject);
-      req.write(body);
+      req.write(bodyStr);
       req.end();
     });
 
-    const parsed = JSON.parse(recipeText);
-    const recipe = JSON.parse(parsed.content[0].text);
+    // Log the full response so we can debug
+    console.log('Claude raw response:', rawResponse);
+
+    const claudeResponse = JSON.parse(rawResponse);
+
+    // Check for API errors
+    if (claudeResponse.error) {
+      throw new Error(claudeResponse.error.message || 'Claude API error');
+    }
+
+    // Extract the text content
+    const text = claudeResponse.content[0].text;
+    console.log('Claude text:', text);
+
+    // Clean and parse the JSON
+    const cleaned = text.replace(/```json|```/g, '').trim();
+    const recipe = JSON.parse(cleaned);
 
     return {
       statusCode: 200,
@@ -63,6 +78,7 @@ Reply ONLY with this JSON, no extra text:
     };
 
   } catch (err) {
+    console.log('Error:', err.message);
     return {
       statusCode: 500,
       headers: { 'Content-Type': 'application/json' },
