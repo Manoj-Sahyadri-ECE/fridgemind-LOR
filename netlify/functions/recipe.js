@@ -25,22 +25,20 @@ Reply ONLY with this JSON, no extra text, no markdown, no backticks:
 }`;
 
     const https = require('https');
+    const apiKey = process.env.GEMINI_API_KEY;
 
     const bodyStr = JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1200,
-      messages: [{ role: 'user', content: prompt }],
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: { temperature: 0.7, maxOutputTokens: 1200 }
     });
 
     const rawResponse = await new Promise((resolve, reject) => {
       const req = https.request({
-        hostname: 'api.anthropic.com',
-        path: '/v1/messages',
+        hostname: 'generativelanguage.googleapis.com',
+        path: `/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': process.env.ANTHROPIC_API_KEY,
-          'anthropic-version': '2023-06-01',
           'Content-Length': Buffer.byteLength(bodyStr),
         },
       }, (res) => {
@@ -53,21 +51,13 @@ Reply ONLY with this JSON, no extra text, no markdown, no backticks:
       req.end();
     });
 
-    // Log the full response so we can debug
-    console.log('Claude raw response:', rawResponse);
+    const geminiResponse = JSON.parse(rawResponse);
 
-    const claudeResponse = JSON.parse(rawResponse);
-
-    // Check for API errors
-    if (claudeResponse.error) {
-      throw new Error(claudeResponse.error.message || 'Claude API error');
+    if (geminiResponse.error) {
+      throw new Error(geminiResponse.error.message || 'Gemini API error');
     }
 
-    // Extract the text content
-    const text = claudeResponse.content[0].text;
-    console.log('Claude text:', text);
-
-    // Clean and parse the JSON
+    const text = geminiResponse.candidates[0].content.parts[0].text;
     const cleaned = text.replace(/```json|```/g, '').trim();
     const recipe = JSON.parse(cleaned);
 
@@ -78,7 +68,6 @@ Reply ONLY with this JSON, no extra text, no markdown, no backticks:
     };
 
   } catch (err) {
-    console.log('Error:', err.message);
     return {
       statusCode: 500,
       headers: { 'Content-Type': 'application/json' },
