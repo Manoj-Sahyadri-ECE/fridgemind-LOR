@@ -5,11 +5,17 @@ async function getRecipeFromClaude(ingredients, mood, diet) {
     body: JSON.stringify({ ingredients, mood, diet }),
   });
 
+  const raw = await response.text();
+  console.log('Raw response:', raw);
+
   if (!response.ok) {
-    const err = await response.json();
-    throw new Error(err.error || 'Something went wrong');
+    throw new Error('Server error: ' + raw);
   }
 
-  const recipe = await response.json();
-  return recipe;
+  try {
+    const recipe = JSON.parse(raw);
+    return recipe;
+  } catch(e) {
+    throw new Error('Could not parse recipe: ' + raw);
+  }
 }
