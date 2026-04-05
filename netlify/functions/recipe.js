@@ -6,22 +6,29 @@ exports.handler = async function(event) {
   try {
     const { ingredients, mood, diet } = JSON.parse(event.body);
 
-    const prompt = `You are a professional Indian chef. A user in India has these leftover ingredients: ${ingredients.join(', ')}.
+    const prompt = `You are a professional Indian chef from India. A user has these leftover ingredients: ${ingredients.join(', ')}.
 Mood: ${mood}
 Diet: ${diet === 'none' ? 'no restriction' : diet}
 
-Generate ONE real named Indian recipe using most of these ingredients.
+Create ONE specific, named Indian recipe. The name must be the EXACT traditional name of the dish you are making with those ingredients - not a generic description.
+
+For example:
+- eggs + onion + tomato = "Anda Bhurji" NOT "Egg scramble"
+- paneer + spinach = "Palak Paneer" NOT "Paneer spinach curry"  
+- potato + cauliflower = "Aloo Gobi" NOT "Mixed vegetable sabzi"
+- bread + vegetables = "Bread Upma" or "Masala Toast"
+- maggi + paneer + cheese = "Cheesy Paneer Maggi"
 
 Reply ONLY with this JSON, no extra text, no markdown, no backticks:
 {
-  "name": "Dish name e.g. Paneer Bhurji",
-  "tagline": "One line description",
-  "cookTime": "25 minutes",
+  "name": "Exact traditional Indian dish name",
+  "tagline": "One mouth-watering line about this dish",
+  "cookTime": "X minutes",
   "servings": "2",
   "difficulty": "Easy",
-  "ingredients": ["200g paneer", "2 tomatoes chopped"],
-  "steps": ["Heat oil in kadhai", "Add onions and saute"],
-  "tip": "A useful cooking tip"
+  "ingredients": ["quantity + ingredient + preparation"],
+  "steps": ["Clear step starting with action verb"],
+  "tip": "One genuine chef tip specific to this dish"
 }`;
 
     const https = require('https');

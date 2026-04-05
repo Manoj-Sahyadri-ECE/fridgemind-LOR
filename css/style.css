@@ -568,3 +568,46 @@ main {
   .recipe-header { flex-direction: column; }
   .recipe-meta { text-align: left; }
 }
+@keyframes chipPop {
+  0%   { transform: scale(0.6); opacity: 0; }
+  70%  { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes recipeReveal {
+  0%   { opacity: 0; transform: translateY(28px) scale(0.98); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes stepSlide {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes badgeBounce {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+.chip { animation: chipPop 0.25s cubic-bezier(0.34,1.56,0.64,1) both; }
+.recipe-card { animation: recipeReveal 0.5s cubic-bezier(0.34,1.2,0.64,1) both; }
+.recipe-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #d97706, #fcd34d, #b45309, #fcd34d, #d97706);
+  background-size: 300% 100%;
+  animation: shimmer 4s linear infinite;
+}
+.recipe-card { position: relative; overflow: hidden; }
+.steps-list li { animation: stepSlide 0.4s ease both; }
+.steps-list li:nth-child(1){animation-delay:.10s}
+.steps-list li:nth-child(2){animation-delay:.20s}
+.steps-list li:nth-child(3){animation-delay:.30s}
+.steps-list li:nth-child(4){animation-delay:.40s}
+.steps-list li:nth-child(5){animation-delay:.50s}
+.mood-card:hover .mood-icon,
+.mood-card.selected .mood-icon { transform: scale(1.2) rotate(-5deg); }
+.chip-remove:hover { transform: rotate(90deg); }
+.header-badge { animation: badgeBounce 3s ease-in-out infinite; }
