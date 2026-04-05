@@ -1,5 +1,5 @@
 async function getRecipeFromClaude(ingredients, mood, diet) {
-  const response = await fetch('/.netlify/functions/recipe', {
+  const response = await fetch('/api/recipe', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ingredients, mood, diet }),
