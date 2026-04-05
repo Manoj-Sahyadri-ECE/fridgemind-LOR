@@ -25,20 +25,23 @@ Reply ONLY with this JSON, no extra text, no markdown, no backticks:
 }`;
 
     const https = require('https');
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GROQ_API_KEY;
 
     const bodyStr = JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.7, maxOutputTokens: 1200 }
+      model: 'llama-3.1-8b-instant',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 1200,
+      temperature: 0.7,
     });
 
     const rawResponse = await new Promise((resolve, reject) => {
       const req = https.request({
-        hostname: 'generativelanguage.googleapis.com',
-        path: `/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+        hostname: 'api.groq.com',
+        path: '/openai/v1/chat/completions',
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
           'Content-Length': Buffer.byteLength(bodyStr),
         },
       }, (res) => {
@@ -51,13 +54,13 @@ Reply ONLY with this JSON, no extra text, no markdown, no backticks:
       req.end();
     });
 
-    const geminiResponse = JSON.parse(rawResponse);
+    const groqResponse = JSON.parse(rawResponse);
 
-    if (geminiResponse.error) {
-      throw new Error(geminiResponse.error.message || 'Gemini API error');
+    if (groqResponse.error) {
+      throw new Error(groqResponse.error.message || 'Groq API error');
     }
 
-    const text = geminiResponse.candidates[0].content.parts[0].text;
+    const text = groqResponse.choices[0].message.content;
     const cleaned = text.replace(/```json|```/g, '').trim();
     const recipe = JSON.parse(cleaned);
 
